@@ -16,7 +16,7 @@ fn main() {
 			}, 
 			None => { 
 				println(fmt!("Error: %s is not a valid number.", *n));
-				s + 0.0 
+				s
 			}
 		}
 	});
