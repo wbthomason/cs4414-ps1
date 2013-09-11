@@ -45,7 +45,7 @@ fn new_connection_callback(new_conn :net_tcp::TcpNewConnection, _killch: std::co
                         let httpIndex = lineOne.find_str("HTTP/1.1");
                         let response: ~str = unsafe { 
                             match (getIndex, httpIndex) {
-                                (Some(i), Some(j)) if (j - i) > 6 => loadFile(lineOne.slice(i+4,j-1)),
+                                (Some(i), Some(j)) if (j - i) > 6 => loadFile(lineOne.slice(i+5,j-1)),
                                 (_,_) => fmt!(
                             "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n
                              <doctype !html><html><head><title>Hello, Rust!</title>
@@ -74,14 +74,14 @@ fn main() {
 }
 
 fn loadFile(path : &str) -> ~str {
-    let file = &Path(path);
+    let file = os::make_absolute(&Path(path));
     let return_string : ~str = fmt!("HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n
                              <doctype !html><html><head><title>%s</title></head>
                              <body>
                              %s
                              </body></html>\r\n", path, 
-                                if os::path_exists(file) && ! os::path_is_dir(file) {
-                                    match std::io::read_whole_file_str(file) {
+                                if os::path_exists(&file) && ! os::path_is_dir(&file) {
+                                    match std::io::read_whole_file_str(&file) {
                                         Ok(data) => {
                                             data
                                         }
